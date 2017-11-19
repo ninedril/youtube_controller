@@ -6,4 +6,8 @@ function VideoManager() {
     this.timer = function(wait_min) {
         setTimeout(this.play.bind(this), wait_min*60*1000);
     }
+    this.replay = function() {
+        this.video.currentTime = 0;
+        this.video.play();
+    }
 }
