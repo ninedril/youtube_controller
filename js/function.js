@@ -1,8 +1,8 @@
 function VideoManager() {
     //Properties
-    this.video = document.getElementsByTagName('video')[0];
-    this.title;
-    this.next_bt;
+    this.video = null;
+    this.title = '';
+    this.next_bt = null;
 
     //Init
     this.video = document.getElementsByTagName('video')[0];
