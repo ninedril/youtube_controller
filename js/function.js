@@ -6,6 +6,9 @@ function VideoManager() {
 
     //Init
     this.video = document.getElementsByTagName('video')[0];
+    this.video.onended = function() {
+        this.playNext();
+    }
 
     //Methods
 	this.play = function() { 
