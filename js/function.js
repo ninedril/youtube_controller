@@ -10,4 +10,20 @@ function VideoManager() {
         this.video.currentTime = 0;
         this.video.play();
     }
+    this.getTitle = function() {
+        //動画タイトルを含むタグのXPath表現の配列
+        var exps = [
+            '/html/body/descendant::*[self::h1 or self::h2 or self::h3][contains(@*, "title")][text()]'
+        ];
+        var title = null;
+
+        for (var exp of exps) {
+            var r = document.evaluate(exp, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE);
+            if(r.snapshotLength == 1) {
+                title = r.snapshotItem(0).textContent;
+                break;
+            }
+        }
+        return title;
+    }
 }
