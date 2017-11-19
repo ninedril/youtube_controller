@@ -38,4 +38,23 @@ function VideoManager() {
         this.title = title;
         return title;
     }
+    this.getNextBt = function() {
+        var next_bts = [];
+
+        //1st: xpath selection
+        var xpath_exps = [
+            '/html/body/descendant::*[self::button or self::a][contains(@*, "next")][not(text())]'
+        ];
+        for (var exp of xpath_exps) {
+            var r = document.evaluate(exp, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE);
+            for (var i = 0; i < r.snapshotLength; i++) {
+                next_bts.push(r.snapshotItem(i));
+            }
+        }
+        
+        //1st check
+        if(next_bts.length == 1) return next_bts[0];
+        if(next_bts.length == 0) return null;
+
+    }
 }
