@@ -28,6 +28,7 @@ function VideoManager() {
                 break;
             }
         }
+        this.title = title;
         return title;
     }
 }
