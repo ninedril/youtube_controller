@@ -1,7 +1,8 @@
 function VideoManager() {
     //Properties
     this.video = document.getElementsByTagName('video')[0];
-    
+    this.title;
+
     //Methods
 	this.play = function() { 
 		this.video.paused ? this.video.play() : this.video.pause();
