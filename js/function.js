@@ -45,17 +45,11 @@ function VideoManager() {
         var xpath_exps = [
             '/html/body/descendant::*[self::button or self::a][contains(@*, "next")]'
         ];
-        for (var exp of xpath_exps) {
-            var r = document.evaluate(exp, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE);
-            for (var i = 0; i < r.snapshotLength; i++) {
-                next_bts.push(r.snapshotItem(i));
-            }
-        }
+        for (var exp of xpath_exps) next_bts.push(getNodesByXpath(exp));
         
         //1st check
         if(next_bts.length == 1) return next_bts[0];
         if(next_bts.length == 0) return null;
-
     }
 }
 
@@ -66,7 +60,7 @@ function countDuplication(array) {
     }
 }
 
-function getNodesByXpath(root_node, exp) {
+function getNodesByXpath(exp, root_node = document) {
     var nodes = [];
     var r = doc.evaluate(exp, root_node, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
     for(var i=0; i<r.snapshotLength; i++) nodes.push(r.snapshotItem(i));
