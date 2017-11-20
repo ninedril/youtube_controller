@@ -69,8 +69,6 @@ function countDuplication(array) {
 function getNodesByXpath(root_node, exp) {
     var nodes = [];
     var r = doc.evaluate(exp, root_node, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-    for(var i=0; i<r.snapshotLength; i++) {
-        nodes.push(r.snapshotItem(i));
-    }
+    for(var i=0; i<r.snapshotLength; i++) nodes.push(r.snapshotItem(i));
     return nodes;
 }
