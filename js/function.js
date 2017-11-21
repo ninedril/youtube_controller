@@ -47,6 +47,7 @@ function VideoManager() {
         ];
         for(var exp of xpath_exps) next_bts.push(getNodesByXpath(exp));
         
+        //1st check
         if(next_bts.length == 1) return next_bts[0];
         if(next_bts.length == 0) return null;
 
