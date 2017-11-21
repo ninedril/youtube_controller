@@ -47,9 +47,13 @@ function VideoManager() {
         ];
         for(var exp of xpath_exps) next_bts.push(getNodesByXpath(exp));
         
-        //1st check
         if(next_bts.length == 1) return next_bts[0];
         if(next_bts.length == 0) return null;
+
+        //2nd: visible selection (whether its visible or not)    
+        next_bts = next_bts.filter(function(element){
+            return (element.clientWidth > 0);
+        })
     }
 }
 
