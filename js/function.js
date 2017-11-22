@@ -94,13 +94,21 @@ function findNextBt() {
     ];
 }
 
-function getCombination(hash) {
-  var total = 1;
-  for(var key in hash) {
-      total = total*hash[key].length
-  }
+function combine(array) {
+    var a1 = array.shift();
+    var a2 = array.shift();
 
-  for(var k=0; k<total; k++) {
-      for(var l=0; )
-  }
+    var result = [];
+    for(var e1 of a1) {
+        for(var e2 of a2) {
+            result.push(e1 + e2);
+        }
+    }
+
+    if(array.length > 0) {
+        for(var e of array) {
+            result = combine([result, e]);
+        }
+    }
+    return result;
 }
