@@ -94,6 +94,11 @@ function findNextBt() {
     ];
 }
 
+function makeExpOfTagNames(tag_names) {
+    var result = [];
+    tag_names.map();
+}
+
 function combine(array) {
     var a1 = array.shift();
     var a2 = array.shift();
