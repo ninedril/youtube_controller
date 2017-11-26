@@ -85,19 +85,29 @@ function synonymDict() {
     ];
 }
 
+/**検索方針：
+(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集(Nodes)
+(2)Nodesを、表示されているもののみでフィルター
+**/
 function findNextBt() {
+    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集
     var next_synonyms = ['next', '次', 'succeeding'];
     var button_tag_names = ['button', 'a'];
 
-    var xpath_exps = [
-        '/html/body/descendant::*' + tag_name_exp + tag_attr_exp
-    ];
+    var xpath_tag_names = '/html/body/descendant::*' + makeXPathOfTagNames(button_tag_names);
+    
 }
 
-function makeExpOfTagNames(tag_names) {
-    var result = tag_names.map((e) => 'self::' + e).join('or');
+function makeXPathOfTagNames(tag_names) {
+    var result = tag_names.map((e) => 'self::' + e).join(' or ');
     result = '[' + result + ']';
     return result;
+}
+
+function makeXPathsOfContain(words) {
+    var result = [];
+    result = words.map((e) => '[descendant::text()[contains(., "' + e + '")]]');
+    Array.prototype.push.apply(result, words.map((e) => '[attribute::*[contains(., "' + e + '")]]'));
 }
 
 function combine(array) {
