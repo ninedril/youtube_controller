@@ -95,8 +95,9 @@ function findNextBt() {
 }
 
 function makeExpOfTagNames(tag_names) {
-    var result = [];
-    tag_names.map();
+    var result = tag_names.map((e) => 'self::' + e).join('or');
+    result = '[' + result + ']';
+    return result;
 }
 
 function combine(array) {
