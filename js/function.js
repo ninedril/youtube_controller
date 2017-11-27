@@ -66,7 +66,7 @@ function VideoManager() {
 }
 
 /*********************************************************************
-配列の操作
+配列を操作する関数
 *********************************************************************/
 function combine(array) {
     //array = 配列の配列
@@ -90,8 +90,30 @@ function combine(array) {
     return result;
 }
 
+function arrayUnique(array) {
+    var result = [];
+    result = array.filter((e, i, a) => a.indexOf(e) === i);
+    return result;
+}
+
 /*********************************************************************
-DOM操作（ノード取得）に関するメソッド
+XPath文字列を生成する関数
+*********************************************************************/
+function makeXPathOfTagNames(tag_names) {
+    var result = tag_names.map(e => 'self::' + e).join(' or ');
+    result = '[' + result + ']';
+    return result;
+}
+
+function makeXPathsOfContain(words) {
+    var result = [];
+    result = words.map(e => '[descendant::text()[contains(., "' + e + '")]]');
+    Array.prototype.push.apply(result, words.map(e => '[attribute::*[contains(., "' + e + '")]]'));
+    return result;
+}
+
+/*********************************************************************
+DOM操作（ノード取得）に関する関数
 *********************************************************************/
 function getNodesByXpath(exp, root_node = document) {
     var nodes = [];
@@ -113,33 +135,28 @@ function findNextBt() {
     (2)Nodesを、表示されているもののみでフィルター
     ************************************/
 
-    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集
+    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを集める
     var next_synonyms = ['next', '次', 'succeeding'];
     var button_tag_names = ['button', 'a'];
-    var next_bts = [];
+    var nodes_nextBts = [];
 
     var xpath_tag_names = makeXPathOfTagNames(button_tag_names);
     var xpaths_next_synonyms = makeXPathsOfContain(next_synonyms);
     var xpaths_next_bts = combine([
         ['/html/body/descendant::*'], [xpath_tag_names], xpaths_next_synonyms
     ]);
-
-    next_bts = getNodesByXpaths(xpaths_next_bts);
-
+    nodes_nextBts = arrayUnique(getNodesByXpaths(xpaths_next_bts));
+    
+    //(2)nodes_nextBtsから、表示されているものを選ぶ
+    nodes_nextBts = selectVisible(nodes_nextBts);
+    
+    return nodes_nextBts;
 }
 
 /*********************************************************************
-XPath文字列の生成メソッド
+ノードをフィルターする関数
 *********************************************************************/
-function makeXPathOfTagNames(tag_names) {
-    var result = tag_names.map((e) => 'self::' + e).join(' or ');
-    result = '[' + result + ']';
-    return result;
-}
-
-function makeXPathsOfContain(words) {
-    var result = [];
-    result = words.map((e) => '[descendant::text()[contains(., "' + e + '")]]');
-    Array.prototype.push.apply(result, words.map((e) => '[attribute::*[contains(., "' + e + '")]]'));
-    return result;
+function selectVisible(nodes) {
+    nodes = nodes.filter((e) => e.clientWidth > 0);
+    return nodes;
 }
