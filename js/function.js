@@ -1,3 +1,6 @@
+/*********************************************************************
+Youtubeを制御するためのクラス
+*********************************************************************/
 function VideoManager() {
     //Properties
     this.video = null;
@@ -62,65 +65,13 @@ function VideoManager() {
     }
 }
 
-function countDuplication(array) {
-    var counts = {};
-    for(var i=0; i<array.length; i++) {
-
-    }
-}
-
-function getNodesByXpath(exp, root_node = document) {
-    var nodes = [];
-    var r = document.evaluate(exp, root_node, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
-    for(var i=0; i<r.snapshotLength; i++) nodes.push(r.snapshotItem(i));
-    return nodes;
-}
-
-function getNodesByXpaths(exps, root_node = document) {
-    var nodes = [];
-    for(e of exps) Array.prototype.push.apply(nodes, getNodesByXpath(e));
-    return nodes;
-}
-
-/**検索方針：
-(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集(Nodes)
-(2)Nodesを、表示されているもののみでフィルター
-**/
-function findNextBt() {
-    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集
-    var next_synonyms = ['next', '次', 'succeeding'];
-    var button_tag_names = ['button', 'a'];
-    var next_bts = [];
-
-    var xpath_tag_names = makeXPathOfTagNames(button_tag_names);
-    var xpaths_next_synonyms = makeXPathsOfContain(next_synonyms);
-    var xpaths_next_bts = combine([
-        ['/html/body/descendant::*'], [xpath_tag_names], xpaths_next_synonyms
-    ]);
-
-    next_bts = getNodesByXpaths(xpaths_next_bts);
-
-}
-
-/**********
-XPath 関係
-***********/
-function makeXPathOfTagNames(tag_names) {
-    var result = tag_names.map((e) => 'self::' + e).join(' or ');
-    result = '[' + result + ']';
-    return result;
-}
-
-function makeXPathsOfContain(words) {
-    var result = [];
-    result = words.map((e) => '[descendant::text()[contains(., "' + e + '")]]');
-    Array.prototype.push.apply(result, words.map((e) => '[attribute::*[contains(., "' + e + '")]]'));
-    return result;
-}
-
-//array = 配列の配列
-//例：combine([['a', 'b', 'c'], ['e', 'f', 'g']]) = ['ae', 'af', ...'cg'](9)
+/*********************************************************************
+配列の操作
+*********************************************************************/
 function combine(array) {
+    //array = 配列の配列
+    //例：combine([['a', 'b', 'c'], ['e', 'f', 'g']]) = ['ae', 'af', ...'cg'](9)
+
     var a1 = array.shift();
     var a2 = array.shift();
 
@@ -136,5 +87,59 @@ function combine(array) {
             result = combine([result, e]);
         }
     }
+    return result;
+}
+
+/*********************************************************************
+DOM操作（ノード取得）に関するメソッド
+*********************************************************************/
+function getNodesByXpath(exp, root_node = document) {
+    var nodes = [];
+    var r = document.evaluate(exp, root_node, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE);
+    for(var i=0; i<r.snapshotLength; i++) nodes.push(r.snapshotItem(i));
+    return nodes;
+}
+
+function getNodesByXpaths(exps, root_node = document) {
+    var nodes = [];
+    for(e of exps) Array.prototype.push.apply(nodes, getNodesByXpath(e));
+    return nodes;
+}
+
+function findNextBt() {
+    /************************************
+    検索方針
+    (1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集(Nodes)
+    (2)Nodesを、表示されているもののみでフィルター
+    ************************************/
+
+    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集
+    var next_synonyms = ['next', '次', 'succeeding'];
+    var button_tag_names = ['button', 'a'];
+    var next_bts = [];
+
+    var xpath_tag_names = makeXPathOfTagNames(button_tag_names);
+    var xpaths_next_synonyms = makeXPathsOfContain(next_synonyms);
+    var xpaths_next_bts = combine([
+        ['/html/body/descendant::*'], [xpath_tag_names], xpaths_next_synonyms
+    ]);
+
+    next_bts = getNodesByXpaths(xpaths_next_bts);
+
+}
+
+/*********************************************************************
+XPath文字列の生成メソッド
+*********************************************************************/
+function makeXPathOfTagNames(tag_names) {
+    var result = tag_names.map((e) => 'self::' + e).join(' or ');
+    result = '[' + result + ']';
+    return result;
+}
+
+function makeXPathsOfContain(words) {
+    var result = [];
+    result = words.map((e) => '[descendant::text()[contains(., "' + e + '")]]');
+    Array.prototype.push.apply(result, words.map((e) => '[attribute::*[contains(., "' + e + '")]]'));
     return result;
 }
