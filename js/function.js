@@ -100,6 +100,9 @@ function arrayUnique(array) {
 XPath文字列を生成する関数
 *********************************************************************/
 function makeXPathOfTagNames(tag_names) {
+    if(tag_names.length == 0) return tag_names;
+    
+    //main process
     var result = tag_names.map(e => 'self::' + e).join(' or ');
     result = '[' + result + ']';
     return result;
@@ -126,6 +129,19 @@ function getNodesByXpaths(exps, root_node = document) {
     var nodes = [];
     for(e of exps) Array.prototype.push.apply(nodes, getNodesByXpath(e));
     return nodes;
+}
+
+function getNodesByWords(words, tag_names=[]) {
+    //words内の単語を内部、もしくは属性に含む要素を取得
+    var xpath_tag_names = tag_names.length >= 1 ? makeXPathOfTagNames(tag_names) : '';
+    var xpaths_words = makeXPathsOfContain(words);
+    var xpaths_nodes = combine([
+        ['/html/body/descendant::*'], [xpath_tag_names], xpaths_words
+    ]);
+    nodes_nextBts = arrayUnique(getNodesByXpaths(xpaths_next_bts));
+    nodes_nextBts = selectVisible(nodes_nextBts);
+    
+    return nodes_nextBts;
 }
 
 function findNextBt() {
