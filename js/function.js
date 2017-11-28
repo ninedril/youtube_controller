@@ -42,26 +42,13 @@ function VideoManager() {
         return title;
     }
     this.getNextBt = function() {
-        var next_bts = [];
-
-        //1st: xpath selection (select candidates)
-        var xpath_exps = [
-            '/html/body/descendant::*[self::button or self::a][contains(@*, "next")]'
-        ];
-        for(var exp of xpath_exps) next_bts.push(getNodesByXpath(exp));
-        
-        //1st check
-        if(next_bts.length == 1) return this.next_bts = next_bts;
-        if(next_bts.length == 0) return null;
-
-        //2nd: visible selection (whether its visible or not)    
-        next_bts = next_bts.filter(function(element){
-            return (element.clientWidth > 0);
-        });
-
-        //2nd check
-        if(next_bts.length == 1) return this.next_bts = next_bts;
-        if(next_bts.length == 0) return null;
+        var next_synonyms = ['next', '次', 'succeeding'];
+        var button_tag_names = ['button', 'a'];
+        var nodes_nextBts = null;
+    
+        nodes_nextBt = getNodesByWords(next_synonyms, button_tag_names)[0];
+    
+        return nodes_nextBt;
     }
 }
 
@@ -100,7 +87,9 @@ function arrayUnique(array) {
 XPath文字列を生成する関数
 *********************************************************************/
 function makeXPathOfTagNames(tag_names) {
-    if(tag_names.length == 0) return tag_names;
+    //must be Array and at least 1 element
+    if(! Array.isArray(tag_names)) return '';
+    if(tag_names.length == 0) return '';
     
     //main process
     var result = tag_names.map(e => 'self::' + e).join(' or ');
@@ -109,6 +98,11 @@ function makeXPathOfTagNames(tag_names) {
 }
 
 function makeXPathsOfContain(words) {
+    //must be Array and at least 1 element
+    if(! Array.isArray(words)) return [];
+    if(words.length == 0) return [];
+
+    //main
     var result = [];
     result = words.map(e => '[descendant::text()[contains(., "' + e + '")]]');
     Array.prototype.push.apply(result, words.map(e => '[attribute::*[contains(., "' + e + '")]]'));
@@ -132,41 +126,28 @@ function getNodesByXpaths(exps, root_node = document) {
 }
 
 function getNodesByWords(words, tag_names=[]) {
-    //words内の単語を内部、もしくは属性に含む要素を取得
-    var xpath_tag_names = tag_names.length >= 1 ? makeXPathOfTagNames(tag_names) : '';
-    var xpaths_words = makeXPathsOfContain(words);
-    var xpaths_nodes = combine([
-        ['/html/body/descendant::*'], [xpath_tag_names], xpaths_words
-    ]);
-    nodes_nextBts = arrayUnique(getNodesByXpaths(xpaths_next_bts));
-    nodes_nextBts = selectVisible(nodes_nextBts);
-    
-    return nodes_nextBts;
-}
-
-function findNextBt() {
-    /************************************
+     /************************************
     検索方針
-    (1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを収集(Nodes)
+    (1)文字列配列words内にあるテキスト、もしくは属性をもつtag_namesタグを収集(Nodes)
     (2)Nodesを、表示されているもののみでフィルター
     ************************************/
+    result_nodes = [];
+    var xpath_tag_names = makeXPathOfTagNames(tag_names);
+    var xpaths_words = makeXPathsOfContain(words);
 
-    //(1)「次へ」などを含むテキスト、もしくは属性を持った「a, button」などのタグを集める
-    var next_synonyms = ['next', '次', 'succeeding'];
-    var button_tag_names = ['button', 'a'];
-    var nodes_nextBts = [];
-
-    var xpath_tag_names = makeXPathOfTagNames(button_tag_names);
-    var xpaths_next_synonyms = makeXPathsOfContain(next_synonyms);
-    var xpaths_next_bts = combine([
-        ['/html/body/descendant::*'], [xpath_tag_names], xpaths_next_synonyms
-    ]);
-    nodes_nextBts = arrayUnique(getNodesByXpaths(xpaths_next_bts));
+    if(xpath_tag_names) {
+        var xpaths_nodes = combine([
+            ['/html/body/descendant::*'], [xpath_tag_names], xpaths_words
+        ]);
+    } else {
+        var xpaths_nodes = combine([
+            ['/html/body/descendant::*'], xpaths_words
+        ]);
+    }
+    result_nodes = arrayUnique(getNodesByXpaths(xpaths_nodes));
+    result_nodes = selectVisible(result_nodes);
     
-    //(2)nodes_nextBtsから、表示されているものを選ぶ
-    nodes_nextBts = selectVisible(nodes_nextBts);
-    
-    return nodes_nextBts;
+    return result_nodes;
 }
 
 /*********************************************************************
