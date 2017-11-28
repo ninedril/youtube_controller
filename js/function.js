@@ -46,7 +46,7 @@ function VideoManager() {
         var button_tag_names = ['button', 'a'];
         var nodes_nextBts = null;
     
-        nodes_nextBt = getNodesByWords(next_synonyms, button_tag_names)[0];
+        nodes_nextBt = selectVisible(getNodesByWords(next_synonyms, button_tag_names))[0];
     
         return nodes_nextBt;
     }
@@ -145,8 +145,7 @@ function getNodesByWords(words, tag_names=[]) {
         ]);
     }
     result_nodes = arrayUnique(getNodesByXpaths(xpaths_nodes));
-    result_nodes = selectVisible(result_nodes);
-    
+
     return result_nodes;
 }
 
