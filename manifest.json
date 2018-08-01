@@ -1,0 +1,52 @@
+{
+     "manifest_version": 2,
+     "name": "Youtube Controller",
+     "description": "Set keyboard shortcut and MUADD button in YouTube",
+     "version": "1",
+     "background": {
+     	"scripts": ["background.js"]
+     },
+     "content_scripts": [
+      {
+       "matches": ["https://www.youtube.com/*"],
+       "js": ["set_shortcut.js"],
+       "css": ["muadd.css"]
+      }
+     ],
+     "commands": {
+           "NEXT": {
+               "suggested_key": {
+                   "default": "Ctrl+Shift+N"  
+               },
+               "description": "YouAuto: Play next song in Playlist.",
+               "global": true
+           },
+           "PREVIOUS": {
+               "suggested_key": {
+                   "default": "Ctrl+Shift+B"  
+               },
+               "description": "YouAuto: Play previous song in Playlist.",
+               "global": true
+           },
+           "PLAY/PAUSE": {
+               "suggested_key": {
+                   "default": "Ctrl+Shift+P"
+               },
+               "description": "YouAuto: Play/Pause song in Playlist.",
+               "global": true
+           },
+           "LIST": {
+           	"suggested_key": {
+           		"default": "Ctrl+Shift+L"
+           	},
+           	"description": "YouAuto: Add/Delete song to/from DnB Playlist.",
+           	"global": true
+	      }
+	},
+     "permissions": [
+     	"tabs"
+     ],
+     "icons": {
+     	"48": "manage.png"
+     }
+}
