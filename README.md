@@ -1,13 +1,16 @@
-# youtube_controller
+youtube_controller
+===
+
+# Overview
 Youtubeの再生・停止／次曲／リプレイをショートカットキーで行えるようにするChrome拡張機能です。<br>
 Youtubeを作業用BGMとして使っている方に。<br>
 <br>
 
-＝＝＝ 便利機能 ＝＝＝<br>
+## Usage
 ・Youtubeタブを新しく開くと、すでに再生していたYoutubeタブの動画が自動で停止される
 ・「前の曲」のショートカットキーは、再生時間20秒以降に押すとはじめから再生になる
 
-＝＝＝ 設定方法 ＝＝＝<br>
+## Install
 1.Chromeに本フォルダをインストール（デベロッパーモード）<br>
 2.ショートカットキーを登録する（グローバルモードにすると便利）<br>
 <br>
