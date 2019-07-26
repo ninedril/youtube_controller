@@ -1,7 +1,7 @@
 youtube_controller
 ===
 
-# Overview
+Overview
 Youtubeの再生・停止／次曲／リプレイをショートカットキーで行えるようにするChrome拡張機能です。<br>
 Youtubeを作業用BGMとして使っている方に。<br>
 <br>
